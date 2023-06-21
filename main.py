@@ -1,36 +1,30 @@
-import requests
+from flask import Flask, jsonify
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+import time
 
-def get_solana_price_data():
-    url = "https://api.coingecko.com/api/v3/coins/markets"
-    params = {
-        "vs_currency": "usd",
-        "ids": "solana",
-        "interval": "hourly",
-        "range": "24h"
-    }
+# Set up Spotify credentials
+client_id = '043908d5e3844f769aecaad844623854'
+client_secret = '6f4b6912c23e404bb1625c28445ef3fb'
+redirect_uri = '/callback'  # Must match the redirect URI in your Spotify Developer Dashboard
 
-    response = requests.get(url, params=params)
-    data = response.json()
+# Create the Spotify client
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri, scope='user-read-playback-state'))
 
-    return data
+app = Flask(__name__)
 
-def detect_trading_patterns(price_data):
-    hourly_prices = [entry['current_price'] for entry in price_data]
+@app.route('/current-song')
+def current_song():
+    # Get the current user's playback information
+    current_playback = sp.current_playback()
 
-    # Insert your trading pattern detection logic here
-    # This is just a simple example to detect an upward trend
-    if hourly_prices[-1] > hourly_prices[0]:
-        pattern = "Upward trend"
+    if current_playback is not None and current_playback['is_playing']:
+        track = current_playback['item']
+        track_name = track['name']
+        artists = ', '.join([artist['name'] for artist in track['artists']])
+        return jsonify({'track_name': track_name, 'artists': artists})
     else:
-        pattern = "No recognizable pattern"
+        return jsonify({'track_name': 'No song is currently playing.', 'artists': ''})
 
-    return pattern
-
-if __name__ == "__main__":
-    solana_price_data = get_solana_price_data()
-
-    if solana_price_data:
-        trading_pattern = detect_trading_patterns(solana_price_data)
-        print(f"Trading Pattern: {trading_pattern}")
-    else:
-        print("Failed to retrieve Solana price data.")
+if __name__ == '__main__':
+    app.run()
