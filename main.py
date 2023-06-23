@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 @app.route('/current-song')
 def current_song():
+    raw_input = input()
     # Get the current user's playback information
     current_playback = sp.current_playback()
 
