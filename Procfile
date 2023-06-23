@@ -1,1 +1,1 @@
-web: gunicorn Spotify:app
+web: gunicorn main:app

@@ -6,7 +6,7 @@ import time
 # Set up Spotify credentials
 client_id = '043908d5e3844f769aecaad844623854'
 client_secret = '6f4b6912c23e404bb1625c28445ef3fb'
-redirect_uri = 'https://powerful-thicket-30866-4deb00c4126c.herokuapp.com//callback'  # Must match the redirect URI in your Spotify Developer Dashboard
+redirect_uri = '/callback'  # Must match the redirect URI in your Spotify Developer Dashboard
 
 # Create the Spotify client
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri, scope='user-read-playback-state'))
