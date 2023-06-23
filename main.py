@@ -13,7 +13,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secre
 
 app = Flask(__name__)
 
-@app.route('/current-song')
+@app.route('https://powerful-thicket-30866-4deb00c4126c.herokuapp.com/current-song')
 def current_song():
     # Get the current user's playback information
     current_playback = sp.current_playback()
